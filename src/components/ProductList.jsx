@@ -1,14 +1,19 @@
 import React from "react";
 import { HiSearch } from "react-icons/hi";
-import {
-  HiMiniTrash,
-  HiOutlinePencil,
-  HiOutlineTrash,
-  HiPlus,
-  HiTrash,
-} from "react-icons/hi2";
+import { HiPlus } from "react-icons/hi2";
+import ProductRow from "./ProductRow";
+import ProductRowEmpty from "./ProductRowEmpty";
+import useSWR from "swr";
+import ProductLoader from "./ProductLoader";
+
+const fetcher = (...args) => fetch(...args).then((res) => res.json());
 
 const ProductList = () => {
+  const { data, error, isLoading } = useSWR(
+    `${import.meta.env.VITE_API_URL}/products`,
+    fetcher
+  );
+
   return (
     <div>
       <div className=" flex justify-between mb-3">
@@ -25,7 +30,7 @@ const ProductList = () => {
           </div>
         </div>
         <div className="">
-          <button class="text-white flex justify-center items-center gap-3 bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
+          <button className="text-white flex justify-center items-center gap-3 bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
             Add new Product
             <HiPlus />
           </button>
@@ -54,42 +59,15 @@ const ProductList = () => {
             </tr>
           </thead>
           <tbody>
-            <tr className="odd:bg-white odd:dark:bg-gray-900 even:bg-gray-50 even:dark:bg-gray-800 border-b dark:border-gray-700 hidden last:table-row">
-              <td colSpan={5} className="px-6 py-4 text-center">
-                There is no Product
-              </td>
-            </tr>
-            <tr className="odd:bg-white odd:dark:bg-gray-900 even:bg-gray-50 even:dark:bg-gray-800 border-b dark:border-gray-700">
-              <td className="px-6 py-4">1</td>
-              <th
-                scope="row"
-                className="px-6 py-4 font-medium text-stone-900 whitespace-nowrap dark:text-white"
-              >
-                Apple MacBook Pro 17"
-              </th>
-              <td className="px-6 py-4 text-end">2999</td>
-              <td className="px-6 py-4 text-end">
-                <p className=" text-xs">7 Sep 2024</p>
-                <p className=" text-xs">10:00 PM</p>
-              </td>
-              <td className="px-6 py-4 text-end">
-                <div className="inline-flex rounded-md shadow-sm" role="group">
-                  <button
-                    type="button"
-                    className="px-4 py-2 text-sm font-medium text-stone-900 bg-white border border-gray-200 rounded-s-lg hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-2 focus:ring-blue-700 focus:text-blue-700 dark:bg-gray-800 dark:border-gray-700 dark:text-white dark:hover:text-white dark:hover:bg-gray-700 dark:focus:ring-blue-500 dark:focus:text-white"
-                  >
-                    <HiOutlinePencil />
-                  </button>
-
-                  <button
-                    type="button"
-                    className="px-4 py-2 text-sm font-medium text-red-600 bg-white border border-gray-200 rounded-e-lg hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-2 focus:ring-blue-700 focus:text-blue-700 dark:bg-gray-800 dark:border-gray-700 dark:text-white dark:hover:text-white dark:hover:bg-gray-700 dark:focus:ring-blue-500 dark:focus:text-white"
-                  >
-                    <HiOutlineTrash />
-                  </button>
-                </div>
-              </td>
-            </tr>
+            {isLoading ? (
+              <ProductLoader />
+            ) : data.length === 0 ? (
+              <ProductRowEmpty />
+            ) : (
+              data.map((product, index) => (
+                <ProductRow key={product.id} product={product} index={index} />
+              ))
+            )}
           </tbody>
         </table>
       </div>
