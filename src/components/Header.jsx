@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 
 const Header = () => {
   return (
-    <header className="mb-5">
+    <header className="mb-5 print:hidden">
       <Container>
         <Link to={"/"} className="text-3xl font-bold">
           Voucher App

@@ -3,10 +3,16 @@ import { HiOutlinePencil, HiOutlineTrash } from "react-icons/hi2";
 import { useSWRConfig } from "swr";
 
 import { bouncy } from "ldrs";
+import { Link } from "react-router-dom";
+import toast from "react-hot-toast";
+import ShowDate from "./ShowDate";
 
 bouncy.register();
 
-const ProductRow = ({ product: { id, name, price, created_at }, index }) => {
+const ProductRow = ({
+  product: { id, product_name, price, created_at },
+  index,
+}) => {
   const { mutate } = useSWRConfig();
   const [isDeleting, setIsDeleting] = useState(false);
 
@@ -18,6 +24,8 @@ const ProductRow = ({ product: { id, name, price, created_at }, index }) => {
 
     mutate(`${import.meta.env.VITE_API_URL}/products`);
     setIsDeleting(false);
+
+    toast.success("Product Deleted Successfully.");
   };
 
   return (
@@ -28,33 +36,21 @@ const ProductRow = ({ product: { id, name, price, created_at }, index }) => {
           scope="row"
           className="px-6 py-4 font-medium text-stone-900 whitespace-nowrap dark:text-white"
         >
-          {name}
+          {product_name}
         </th>
         <td className="px-6 py-4 text-end">{price}</td>
         <td className="px-6 py-4 text-end">
-          <p className=" text-xs">
-            {new Date(created_at).toLocaleDateString("en-GB", {
-              day: "numeric",
-              month: "short",
-              year: "numeric",
-            })}
-          </p>
-          <p className=" text-xs">
-            {new Date(created_at).toLocaleTimeString("en-US", {
-              hour: "numeric",
-              minute: "numeric",
-              hour12: true,
-            })}
-          </p>
+          <ShowDate timestamp={created_at} />
         </td>
         <td className="px-6 py-4 text-end">
           <div className="inline-flex rounded-md shadow-sm" role="group">
-            <button
+            <Link
+              to={`/product/edit/${id}`}
               type="button"
-              className="px-4 py-2 text-sm font-medium text-stone-900 bg-white border border-gray-200 rounded-s-lg hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-2 focus:ring-blue-700 focus:text-blue-700 dark:bg-gray-800 dark:border-gray-700 dark:text-white dark:hover:text-white dark:hover:bg-gray-700 dark:focus:ring-blue-500 dark:focus:text-white"
+              className="size-10 flex items-center justify-center text-sm font-medium text-stone-900 bg-white border border-gray-200 rounded-s-lg hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-2 focus:ring-blue-700 focus:text-blue-700 dark:bg-gray-800 dark:border-gray-700 dark:text-white dark:hover:text-white dark:hover:bg-gray-700 dark:focus:ring-blue-500 dark:focus:text-white"
             >
               <HiOutlinePencil />
-            </button>
+            </Link>
 
             <button
               onClick={handleDelete}

@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 
 const Breadcrumb = ({ currentPageTitle, links }) => {
   return (
-    <div className=" w-full flex gap-3 mb-5">
+    <div className="print:hidden w-full flex gap-3 mb-5">
       <nav className="flex" aria-label="Breadcrumb">
         <ol className="inline-flex items-center space-x-1 md:space-x-2 rtl:space-x-reverse">
           <li className="inline-flex  items-center">
@@ -16,6 +16,21 @@ const Breadcrumb = ({ currentPageTitle, links }) => {
               Home
             </Link>
           </li>
+
+          {links &&
+            links.map((link, index) => {
+              return (
+                <li key={index} aria-current="page">
+                  <Link to={link.path} className="flex items-center">
+                    <HiChevronRight />
+                    <span className="ms-1 text-sm font-medium text-gray-500 md:ms-2 dark:text-gray-400">
+                      {link.title}
+                    </span>
+                  </Link>
+                </li>
+              );
+            })}
+
           <li aria-current="page">
             <div className="flex items-center">
               <HiChevronRight />

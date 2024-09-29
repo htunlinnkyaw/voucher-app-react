@@ -5,6 +5,7 @@ import ProductRow from "./ProductRow";
 import ProductRowEmpty from "./ProductRowEmpty";
 import useSWR from "swr";
 import ProductLoader from "./ProductLoader";
+import { Link } from "react-router-dom";
 
 const fetcher = (...args) => fetch(...args).then((res) => res.json());
 
@@ -30,10 +31,13 @@ const ProductList = () => {
           </div>
         </div>
         <div className="">
-          <button className="text-white flex justify-center items-center gap-3 bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
+          <Link
+            to={"/product/create"}
+            className="text-white flex justify-center items-center gap-3 bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+          >
             Add new Product
             <HiPlus />
-          </button>
+          </Link>
         </div>
       </div>
       <div className="relative overflow-x-auto shadow-md sm:rounded-lg">
