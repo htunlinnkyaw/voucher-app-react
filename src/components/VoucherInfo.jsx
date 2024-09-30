@@ -32,13 +32,16 @@ const VoucherInfo = () => {
 
     setIsSending(true);
 
-    await fetch(`${import.meta.env.VITE_API_URL}/vouchers`, {
+    const res = await fetch(`${import.meta.env.VITE_API_URL}/vouchers`, {
       method: "POST",
       body: JSON.stringify(currentVoucher),
       headers: {
         "Content-Type": "application/json",
       },
     });
+
+    const json = await res.json();
+
     mutate(`${import.meta.env.VITE_API_URL}/vouchers`);
 
     resetRecord();
@@ -49,7 +52,7 @@ const VoucherInfo = () => {
     toast.success("Voucher created successfully.");
 
     if (data.save_data) {
-      nav("/voucher");
+      nav(`/voucher/detail/${json.id}`);
     }
   };
 
@@ -180,39 +183,39 @@ const VoucherInfo = () => {
       <SaleForm />
       <VoucherTable />
 
-      <div className="flex items-center justify-end space-x-4">
-        <div className="flex items-center">
-          <input
-            {...register("all_correct")}
-            id="make-sure"
-            type="checkbox"
-            className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 focus:ring-2"
-          />
+      <div className="flex flex-col items-end justify-end gap-3">
+        <div className="flex items-center gap-2">
           <label
             htmlFor="make-sure"
             className="ml-2 text-sm font-medium text-gray-900"
           >
             Make sure all field are correct
           </label>
+          <input
+            {...register("all_correct")}
+            id="make-sure"
+            type="checkbox"
+            className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 focus:ring-2"
+          />
         </div>
-        <div className="flex items-center">
+        <div className="flex items-center gap-2">
+          <label
+            htmlFor="view-vouchers"
+            className="ml-2 text-sm font-medium text-gray-900"
+          >
+            Redirect to view voucher detail
+          </label>
           <input
             {...register("save_data")}
             id="view-vouchers"
             type="checkbox"
             className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 focus:ring-2"
           />
-          <label
-            htmlFor="view-vouchers"
-            className="ml-2 text-sm font-medium text-gray-900"
-          >
-            View vouchers after saving
-          </label>
         </div>
         <button
           form="infoForm"
           type="submit"
-          className="text-white flex items-center gap-2 justify-center bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 focus:outline-none"
+          className="text-white flex items-center gap-2 justify-center bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-5 focus:outline-none"
         >
           <span> Confrim Voucher</span>
           {isSending && (
