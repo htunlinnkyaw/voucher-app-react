@@ -43,7 +43,10 @@ const SaleForm = () => {
   };
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)}>
+    <form
+      onSubmit={handleSubmit(onSubmit)}
+      className="border border-gray-200 rounded-md p-5 bg-white mb-3"
+    >
       <div className="grid grid-cols-1 md:grid-cols-5 md:gap-5 mb-6">
         <div className="col-span-2">
           <label

@@ -1,19 +1,41 @@
-import React from "react";
-import { HiSearch } from "react-icons/hi";
+import React, { useRef, useState } from "react";
+import { HiSearch, HiX } from "react-icons/hi";
 import { HiPlus } from "react-icons/hi2";
 import ProductRow from "./ProductRow";
 import ProductRowEmpty from "./ProductRowEmpty";
 import useSWR from "swr";
 import ProductLoader from "./ProductLoader";
 import { Link } from "react-router-dom";
+import { debounce } from "lodash";
 
 const fetcher = (...args) => fetch(...args).then((res) => res.json());
 
 const ProductList = () => {
+  const [productSearch, setProductSearch] = useState(false);
+
+  const SearchInput = useRef();
+
   const { data, error, isLoading } = useSWR(
-    `${import.meta.env.VITE_API_URL}/products`,
+    productSearch
+      ? `${
+          import.meta.env.VITE_API_URL
+        }/products?product_name_like=${productSearch}`
+      : `${import.meta.env.VITE_API_URL}/products`,
     fetcher
   );
+
+  // const handleSearch = (e) => {
+  //   setProductSearch(e.target.value);
+  // };
+
+  const handleSearch = debounce((e) => {
+    console.log(e.target.value);
+    setProductSearch(e.target.value);
+  }, 500);
+
+  const handleClearSearch = () => {
+    SearchInput.current.value = null;
+  };
 
   return (
     <div>
@@ -24,10 +46,20 @@ const ProductList = () => {
               <HiSearch className="w-4 h-4 text-stone-500 dark:text-stone-400" />
             </div>
             <input
+              ref={SearchInput}
+              onChange={handleSearch}
               type="text"
               className="bg-gray-50 border border-gray-300 text-stone-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full ps-10 p-2.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
               placeholder="Search Product"
             />
+            {productSearch && (
+              <button
+                onClick={handleClearSearch}
+                className="absolute right-2 top-0 bottom-0 m-auto"
+              >
+                <HiX fill="gray" className="active:scale-90 duration-200" />
+              </button>
+            )}
           </div>
         </div>
         <div className="">
